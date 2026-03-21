@@ -348,6 +348,10 @@ The implementation must assume that:
 - the user will provide graphical assets for the game, including character sprites, pet sprites, props, objects, and scene backgrounds
 - sprite and background assets will be delivered as `PNG` files unless a specific exception is explicitly provided
 - the user will also provide a separate drawing or layout reference file that shows how the supplied assets should be arranged within a scene or background
+- read the layout reference very carefully before creating the frontend
+- place the assets in the same way as in the layout reference, and start creating the UI from this starting position
+- this initial setup will be given only for the first level
+- extraploate the initial setup to next levels
 
 The supplied drawing or layout reference must be treated as the initial composition guide for implementation:
 
@@ -393,3 +397,24 @@ Example structure:
 - `design/layout_refs/puzzle-01/layout.png`
 
 The implementation must treat these directories as the canonical source locations for production art and placement references unless the brief is later revised with a different explicit structure.
+
+###Logic & Asset Layout Breakdown
+
+The plan defines a linear level flow where the assets are placed on a 2D plane. The "Background" text indicates the canvas area, and the arrows define the spacing and triggers between assets.
+
+Spawn Point (Asset: main_character.png):Position: Far left of the screen (x = 0).Logic: This is the player's starting state.
+
+The Walkway (Asset: place.png):Position: Distributed along the ground between the character and the goal.Logic: The "Move" arrows indicate these are traversal points. Based on the plan, there are two place.png assets before the obstacle and two place.png assets after the obstacle.
+
+The Jump Hazard (Asset: obstacle.png):Position: Exact center of the level (x = 0.5).Logic: The "Jump" arc indicates this asset has a collision box that requires vertical movement to bypass. It separates the first two "place" markers from the last two.
+
+The Goal (Asset: food.png):Position: Far right of the screen (x = 1.0).Logic: The "Success!" label indicates the win-state trigger. Touching this asset ends the level.
+
+Asset Placement Prompt for the Agent
+Objective: Arrange the four provided .png assets into a functional 2D game level layout on a white canvas. Do not render arrows or instructional text.
+Assets: main_character.png, obstacle.png, place.png, food.png.
+
+Placement Rules:
+Horizontal Alignment: All assets must be aligned to a single horizontal "floor" line in the lower third of the frame.
+Sequential Order (Left to Right):Place one main_character.png at the far left edge.Place two instances of place.png to the right of the character, spaced evenly to represent a walking path.Place one obstacle.png in the horizontal center of the layout. This serves as the mid-point hazard.Place two more instances of place.png to the right of the obstacle to continue the path.Place one food.png at the far right edge to serve as the finish line.
+Spacing Logic:The distance between the character and the obstacle should be equal to the distance between the obstacle and the food.The place.png assets should fill the gaps created by the "Move" logic in the original plan.
